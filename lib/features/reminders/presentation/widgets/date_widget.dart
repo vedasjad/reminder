@@ -12,33 +12,46 @@ class DateWidget extends StatelessWidget {
   final DateTime selectedDateTime;
   final Function(DateTime) updateDateCallback;
 
+  Future showDateSelector(BuildContext context) async {
+    DateTime? selectedDate = await showDatePicker(
+      context: (context),
+      firstDate: DateTime.now(),
+      initialDate: selectedDateTime,
+      currentDate: selectedDateTime,
+      lastDate: DateTime(selectedDateTime.year + 5),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.dark().copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: AppColors.blue,
+              onPrimary: Colors.white,
+              surface: AppColors.darkTile,
+              onSurface: Colors.white,
+            ),
+            dialogBackgroundColor: Colors.black,
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (selectedDate == null) return;
+    updateDateCallback(selectedDate);
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      onLongPress: () async {
+        await showDateSelector(context);
+      },
       onTap: () async {
-        DateTime? selectedDate = await showDatePicker(
-          context: (context),
-          firstDate: DateTime.now(),
-          initialDate: selectedDateTime,
-          currentDate: selectedDateTime,
-          lastDate: DateTime(selectedDateTime.year + 5),
-          builder: (BuildContext context, Widget? child) {
-            return Theme(
-              data: ThemeData.dark().copyWith(
-                colorScheme: const ColorScheme.dark(
-                  primary: AppColors.blue,
-                  onPrimary: Colors.white,
-                  surface: AppColors.darkTile,
-                  onSurface: Colors.white,
-                ),
-                dialogBackgroundColor: Colors.black,
-              ),
-              child: child!,
-            );
-          },
-        );
-        if (selectedDate == null) return;
-        updateDateCallback(selectedDate);
+        await showDateSelector(context);
+      },
+      onHorizontalDragUpdate: (_) async {
+        await showDateSelector(context);
+      },
+      onVerticalDragUpdate: (_) async {
+        await showDateSelector(context);
       },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,

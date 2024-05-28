@@ -168,29 +168,30 @@ class _ConfigureReminderScreenState extends State<ConfigureReminderScreen> {
                 },
                 isDescription: true,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      context.read<RemindersBloc>().add(
-                            DeleteReminderEvent(
-                              reminder: widget.reminder,
-                            ),
-                          );
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Image.asset(
-                        AppAssets.delete,
-                        color: AppColors.white,
-                        height: 30,
+              if (!widget.isNew)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        context.read<RemindersBloc>().add(
+                              DeleteReminderEvent(
+                                reminder: widget.reminder,
+                              ),
+                            );
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Image.asset(
+                          AppAssets.delete,
+                          color: AppColors.white,
+                          height: 30,
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              )
+                    )
+                  ],
+                )
             ],
           ),
         ),
@@ -215,6 +216,8 @@ class _ConfigureReminderScreenState extends State<ConfigureReminderScreen> {
                 Navigator.pop(context);
               },
               child: SizedBox(
+                height: 40,
+                width: 40,
                 child: Image.asset(
                   AppAssets.cross,
                   color: AppColors.white,
@@ -243,6 +246,30 @@ class _ConfigureReminderScreenState extends State<ConfigureReminderScreen> {
             ),
             GestureDetector(
               onTap: () {
+                if (_title.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Task can\'t be empty',
+                      ),
+                      backgroundColor: AppColors.darkTile,
+                      duration: Duration(milliseconds: 500),
+                    ),
+                  );
+                  return;
+                }
+                if (selectedDateTime.isBefore(DateTime.now())) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Selected time has already passed',
+                      ),
+                      backgroundColor: AppColors.darkTile,
+                      duration: Duration(seconds: 1),
+                    ),
+                  );
+                  return;
+                }
                 !widget.isNew
                     ? context.read<RemindersBloc>().add(
                           UpdateReminderEvent(
@@ -267,6 +294,8 @@ class _ConfigureReminderScreenState extends State<ConfigureReminderScreen> {
                 Navigator.pop(context);
               },
               child: SizedBox(
+                height: 30,
+                width: 30,
                 child: Image.asset(
                   AppAssets.tick,
                   color: AppColors.white,

@@ -43,7 +43,7 @@ class _BottomFillBoxState extends State<BottomFillBox> {
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Text(
-                "Add Reminder ${widget.isDescription ? 'Description' : 'Title'}",
+                "Add Reminder ${widget.isDescription ? 'Description' : 'Task'}",
                 style: const TextStyle(
                   fontSize: 20,
                 ),
@@ -68,7 +68,7 @@ class _BottomFillBoxState extends State<BottomFillBox> {
                   : TextCapitalization.words,
               decoration: InputDecoration(
                 hintText:
-                    'Enter ${widget.isDescription ? 'description' : 'title'}',
+                    'Enter ${widget.isDescription ? 'description' : 'task'}',
                 hintStyle: const TextStyle(
                   color: AppColors.text,
                   fontSize: 20,
@@ -130,6 +130,18 @@ class _BottomFillBoxState extends State<BottomFillBox> {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () {
+                      if (!widget.isDescription && newValue.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Task can\'t be empty',
+                            ),
+                            backgroundColor: AppColors.darkTile,
+                            duration: Duration(milliseconds: 500),
+                          ),
+                        );
+                        return;
+                      }
                       widget.onChanged(newValue);
                       Navigator.of(context).pop();
                     },

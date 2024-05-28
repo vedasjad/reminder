@@ -56,14 +56,12 @@ class _FillTileState extends State<FillTile> {
                     Expanded(
                       child: Text(
                         widget.text.trim().isEmpty
-                            ? "Enter ${widget.isDescription ? 'Description' : 'Title'}"
+                            ? "Enter ${widget.isDescription ? 'Description' : 'Task'}"
                             : widget.text.trim(),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 20,
                           color: AppColors.white,
-                          fontWeight: widget.isDescription
-                              ? FontWeight.w100
-                              : FontWeight.normal,
+                          fontWeight: FontWeight.w100,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
