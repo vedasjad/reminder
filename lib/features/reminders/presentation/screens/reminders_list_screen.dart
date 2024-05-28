@@ -62,7 +62,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
                       body: ConfigureReminderScreen(
                         reminder: Reminder(
                           dateTime: currentDateTime.copyWith(
-                            day: currentDateTime.day + 1,
+                            day: currentDateTime.day,
                             second: 0,
                           ),
                           priority: ReminderPriority.low,
@@ -235,7 +235,7 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
                           return a.dateTime.compareTo(b.dateTime);
                         });
                       }
-                      if (remindersList.isEmpty) {
+                      if (remindersList.isEmpty && !isHistory) {
                         return const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
