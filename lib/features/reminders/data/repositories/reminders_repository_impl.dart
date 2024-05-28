@@ -63,8 +63,9 @@ class RemindersRepositoryImpl implements RemindersRepository {
   @override
   ResultFuture<List<Reminder>> getRemindersList() async {
     try {
-      List<Reminder> remindersList = _remindersLocalDataSource
-          .getRemindersList()
+      List<ReminderModel> reminderModelsList =
+          await _remindersLocalDataSource.getRemindersList();
+      List<Reminder> remindersList = reminderModelsList
           .map(
             (reminderModel) => reminderModel.toReminder(),
           )

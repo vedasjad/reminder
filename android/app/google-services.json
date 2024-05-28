@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "578459387759",
+    "project_id": "reminder-vedasjad",
+    "storage_bucket": "reminder-vedasjad.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578459387759:android:0e780052034077d884ca9a",
+        "android_client_info": {
+          "package_name": "com.vedasjad.reminder.reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWrJa3KN9LQ08MdoAaUhM31hoTnz6KiT4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

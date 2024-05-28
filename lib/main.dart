@@ -1,3 +1,5 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -14,6 +16,7 @@ import 'injector.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   Bloc.observer = AppBlocObserver();
   await Hive.initFlutter();
   Hive.registerAdapter(ReminderModelAdapter());
@@ -21,6 +24,7 @@ void main() async {
   await Hive.openBox<ReminderModel>('remindersBox');
   await injector.initializeServices();
   await getIt<NotificationService>().initNotification();
+  FirebaseAnalytics.instance.logEvent(name: 'app_open');
   runApp(const MyApp());
 }
 

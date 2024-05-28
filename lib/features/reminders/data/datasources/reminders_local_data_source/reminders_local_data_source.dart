@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:reminder/core/extensions/reminder_priority.dart';
 import 'package:reminder/features/reminders/data/models/reminder_model.dart';
@@ -10,7 +11,7 @@ abstract class RemindersLocalDataSource {
       {required List<ReminderModel> remindersList});
   Future<void> addReminder({required ReminderModel reminder});
   Future<void> updateReminder({required ReminderModel reminder});
-  List<ReminderModel> getRemindersList();
+  Future<List<ReminderModel>> getRemindersList();
 }
 
 class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
@@ -31,12 +32,22 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
   @override
   Future<void> addReminder({required ReminderModel reminder}) async {
     await remindersBox.put(reminder.id, reminder);
-    _notificationService.scheduleNotification(
+    await _notificationService.scheduleNotification(
       reminder.id,
       reminder.title ?? 'No Title',
       reminder.description ?? 'No Description',
       reminder.dateTime,
       reminder.priority.toShortString,
+    );
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'create_reminder',
+      parameters: {
+        'id': reminder.id,
+        'title': reminder.title,
+        'description': reminder.description,
+        'date_time': reminder.dateTime.toIso8601String(),
+        'priority': reminder.priority.toShortString,
+      },
     );
   }
 
@@ -44,6 +55,12 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
   Future<void> deleteReminder({required ReminderModel reminder}) async {
     await remindersBox.delete(reminder.id);
     await _notificationService.cancelNotification(reminder.id);
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'delete_single_reminder',
+      parameters: {
+        'id': reminder.id,
+      },
+    );
   }
 
   @override
@@ -52,11 +69,20 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
     for (ReminderModel reminder in remindersList) {
       await remindersBox.delete(reminder.id);
       await _notificationService.cancelNotification(reminder.id);
+      await FirebaseAnalytics.instance.logEvent(
+        name: 'delete_reminder',
+        parameters: {
+          'id': reminder.id,
+        },
+      );
     }
   }
 
   @override
-  List<ReminderModel> getRemindersList() {
+  Future<List<ReminderModel>> getRemindersList() async {
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'view_reminder',
+    );
     return remindersBox.values.toList();
   }
 
@@ -69,6 +95,16 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
       reminder.description ?? 'No Description',
       reminder.dateTime,
       reminder.priority.toShortString,
+    );
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'update_reminder',
+      parameters: {
+        'id': reminder.id,
+        'title': reminder.title,
+        'description': reminder.description,
+        'date_time': reminder.dateTime.toIso8601String(),
+        'priority': reminder.priority.toShortString,
+      },
     );
   }
 }

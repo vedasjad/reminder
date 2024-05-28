@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/core/constants/assets/assets.dart';
@@ -144,10 +145,15 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
             actions: [
               if (isNoneSelected)
                 GestureDetector(
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
                       isHistory = !isHistory;
                     });
+                    if (isHistory) {
+                      await FirebaseAnalytics.instance.logEvent(
+                        name: 'view_history',
+                      );
+                    }
                   },
                   child: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
@@ -159,14 +165,20 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
                 ),
               isNoneSelected
                   ? GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         setState(() {
                           isSorted = !isSorted;
                         });
                         if (isSorted) {
                           showToast("Sorted by Time");
+                          await FirebaseAnalytics.instance.logEvent(
+                            name: 'sorted_by_time',
+                          );
                         } else {
                           showToast("Sorted by Priority");
+                          await FirebaseAnalytics.instance.logEvent(
+                            name: 'sorted_by_priority',
+                          );
                         }
                       },
                       child: const Padding(
@@ -178,11 +190,14 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
                       ),
                     )
                   : GestureDetector(
-                      onTap: () {
+                      onTap: () async {
                         setState(() {
                           selectedReminders.clear();
                           selectedReminders.addAll(state.remindersList);
                         });
+                        await FirebaseAnalytics.instance.logEvent(
+                          name: 'select_all_reminders',
+                        );
                       },
                       child: const Padding(
                         padding: EdgeInsets.symmetric(horizontal: 16.0),

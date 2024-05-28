@@ -25,6 +25,8 @@ dependencies:
   timezone: ^0.9.3
   flutter_timezone: ^1.0.8
   fluttertoast: ^8.2.5
+  firebase_core:
+  firebase_analytics:
 
 dev_dependencies:
   flutter_test:
