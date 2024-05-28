@@ -1,5 +1,7 @@
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:reminder/core/extensions/reminder_priority.dart';
 import 'package:reminder/features/reminders/data/models/reminder_model.dart';
+import 'package:reminder/features/reminders/data/services/notifications/notifications_service.dart';
 
 abstract class RemindersLocalDataSource {
   Box<ReminderModel> openDB();
@@ -13,8 +15,12 @@ abstract class RemindersLocalDataSource {
 
 class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
   late Box<ReminderModel> remindersBox;
-  RemindersLocalDataSourceImpl() {
+  late NotificationService _notificationService;
+  RemindersLocalDataSourceImpl({
+    required NotificationService notificationService,
+  }) {
     remindersBox = openDB();
+    _notificationService = notificationService;
   }
 
   @override
@@ -25,11 +31,19 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
   @override
   Future<void> addReminder({required ReminderModel reminder}) async {
     await remindersBox.put(reminder.id, reminder);
+    _notificationService.scheduleNotification(
+      reminder.id,
+      reminder.title ?? 'No Title',
+      reminder.description ?? 'No Description',
+      reminder.dateTime,
+      reminder.priority.toShortString,
+    );
   }
 
   @override
   Future<void> deleteReminder({required ReminderModel reminder}) async {
     await remindersBox.delete(reminder.id);
+    await _notificationService.cancelNotification(reminder.id);
   }
 
   @override
@@ -37,6 +51,7 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
       {required List<ReminderModel> remindersList}) async {
     for (ReminderModel reminder in remindersList) {
       await remindersBox.delete(reminder.id);
+      await _notificationService.cancelNotification(reminder.id);
     }
   }
 
@@ -48,5 +63,12 @@ class RemindersLocalDataSourceImpl implements RemindersLocalDataSource {
   @override
   Future<void> updateReminder({required ReminderModel reminder}) async {
     await remindersBox.put(reminder.id, reminder);
+    await _notificationService.updateNotification(
+      reminder.id,
+      reminder.title ?? 'No Title',
+      reminder.description ?? 'No Description',
+      reminder.dateTime,
+      reminder.priority.toShortString,
+    );
   }
 }

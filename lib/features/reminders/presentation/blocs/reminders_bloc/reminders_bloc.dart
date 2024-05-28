@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:reminder/features/reminders/domain/usecases/add_or_update_reminder.dart';
+import 'package:reminder/features/reminders/domain/usecases/add_reminder.dart';
 import 'package:reminder/features/reminders/domain/usecases/delete_reminder.dart';
 import 'package:reminder/features/reminders/domain/usecases/delete_reminders_list.dart';
 import 'package:reminder/features/reminders/domain/usecases/get_reminders_list.dart';
@@ -67,11 +67,9 @@ class RemindersBloc extends Bloc<RemindersEvent, RemindersState> {
     if (!result.isLeft()) {
       List<Reminder> newRemindersList =
           List<Reminder>.from(state.remindersList);
-      print(newRemindersList.length);
       newRemindersList
           .removeWhere((reminder) => reminder.id == event.reminder.id);
       newRemindersList.add(event.reminder);
-      print(newRemindersList.length);
       emit(
         RemindersFinal(remindersList: newRemindersList),
       );
@@ -108,12 +106,9 @@ class RemindersBloc extends Bloc<RemindersEvent, RemindersState> {
     if (!result.isLeft()) {
       List<Reminder> newRemindersList =
           List<Reminder>.from(state.remindersList);
-      print(newRemindersList);
       List<Reminder> toBeDeleted = event.remindersList;
-      print(toBeDeleted);
       for (Reminder reminder in toBeDeleted) {
         newRemindersList.removeWhere((rem) => reminder.id == rem.id);
-        print("Hello");
       }
       emit(
         RemindersInitial(remindersList: newRemindersList),

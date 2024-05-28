@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import '../../../../core/enums/reminder_priority.dart';
 
 class Reminder extends Equatable {
-  final String id;
+  final int id;
 
   final DateTime dateTime;
 

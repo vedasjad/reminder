@@ -7,6 +7,7 @@ import 'package:reminder/features/reminders/presentation/screens/reminders_list_
 
 import 'core/utils/app_bloc_observer.dart';
 import 'features/reminders/data/models/reminder_model.dart';
+import 'features/reminders/data/services/notifications/notifications_service.dart';
 import 'features/reminders/presentation/blocs/reminders_bloc/reminders_bloc.dart';
 import 'injector.dart' as injector;
 import 'injector.dart';
@@ -18,7 +19,8 @@ void main() async {
   Hive.registerAdapter(ReminderModelAdapter());
   Hive.registerAdapter(ReminderPriorityAdapter());
   await Hive.openBox<ReminderModel>('remindersBox');
-  injector.initializeServices();
+  await injector.initializeServices();
+  await getIt<NotificationService>().initNotification();
   runApp(const MyApp());
 }
 

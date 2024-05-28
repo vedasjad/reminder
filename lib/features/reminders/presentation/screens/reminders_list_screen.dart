@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:reminder/core/constants/assets/assets.dart';
-import 'package:reminder/core/enums/reminder_priority.dart';
 import 'package:reminder/core/theme/colors.dart';
 import 'package:reminder/features/reminders/presentation/screens/configure_reminder_screen.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../../../core/enums/reminder_priority.dart';
 import '../../domain/entities/reminder.dart';
 import '../blocs/reminders_bloc/reminders_bloc.dart';
 import '../widgets/reminder_tile.dart';
@@ -35,6 +35,16 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
+          ///for testing
+          // NotificationService notificationService =
+          //     getIt<NotificationService>();
+          // notificationService.showNotification(
+          //   99,
+          //   'It Helps',
+          //   'Dont go further',
+          //   DateTime.now().add(const Duration(seconds: 1)),
+          //   'Medium',
+          // );
           if (isNoneSelected) {
             Uuid uuid = const Uuid();
             DateTime currentDateTime = DateTime.now();
@@ -46,7 +56,8 @@ class _RemindersListScreenState extends State<RemindersListScreen> {
                       dateTime: currentDateTime.copyWith(
                           day: currentDateTime.day + 1),
                       priority: ReminderPriority.low,
-                      id: '${currentDateTime.toIso8601String()}_${uuid.v4()}',
+                      id: '${currentDateTime.toIso8601String()}_${uuid.v4()}'
+                          .hashCode,
                     ),
                     isNew: true,
                   ),
